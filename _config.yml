@@ -1,0 +1,23 @@
+title: wabuntu
+description: >-
+  Engineering notes on OpenStack, Ubuntu, and infrastructure tinkering —
+  archived from wabuntu.wordpress.com.
+author: wabuntu
+lang: ja
+theme: minima
+minima:
+  skin: dark
+show_excerpts: true
+
+plugins:
+  - jekyll-feed
+
+permalink: /:year/:month/:day/:title/
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+exclude:
+  - README.md
