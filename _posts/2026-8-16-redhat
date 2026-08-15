@@ -29,6 +29,7 @@ NVIDIA Settingsなるものがインストールされます。デフォルト�
 追伸
 
 下記を参考にして、Nvidiaのリポ追加とドライバインストールをしてみたのですが、画質もスピードも明らかに向上しました。↑より先にこちらを試した方がいいかも？
+https://zenn.dev/yurarin/articles/357f89e4487577
 
 sudo dnf config-manager --add-repo http://developer.download.nvidia.com/compute/cuda/repos/rhel9/$(uname -i)/cuda-rhel9.repo
 sudo dnf module install nvidia-driver:latest-dkms
@@ -49,6 +50,8 @@ sudo dnf install snapd
 切り替えのデフォはWin+スペースのようです。
 入力モードの切り替え（ひらがな↔カタカナ）はまだ調べ中…知ってたら教えてください。英語キーボードだから何か変なのかな？
 
+https://docs.redhat.com/ja/documentation/red_hat_enterprise_linux/8/html/using_the_desktop_environment_in_rhel_8/proc_switching-the-input-method-in-gnome_assembly_enabling-chinese-japanese-or-korean-text-input
+
 日本語の変換はあまり賢くない…のでibus-mozcを入れようと思ったのだけど、Repoには入ってるものの何やら依存性の問題で怒られる。追いかけていくとglibcに突き当たる。
 
 $ sudo dnf install -y ibus-mozc
@@ -67,7 +70,9 @@ $ sudo dnf install -y ibus-mozc
 
 おそらく~/.local/share/iconsに、アイコンデータを保存してるのだと思います。
 昔は設定からGUIでダウンロードからインストールまで出来た記憶がありますが、あれは何だったんだろう。
-Docが使い辛いので変える
+
+
+### Docが使い辛いので変える
 
 Docの出しかたが分からず焦りました。
 Winキーを押すと出ますが、出っぱなしかマウスオーバーがいい！
@@ -79,10 +84,13 @@ Winキーを押すと出ますが、出っぱなしかマウスオーバーが�
 
 見た目もそこそこだし、インストールも簡単で良かったです。はじめHyprlandを他ディストリから持ってこようとしたけど無理でした。成功した方、教えてください。
 
-## # 参考サイト
-拡張機能を充実させる
+参考サイト
+http://fruitsoflife.sblo.jp/article/187417935.html
+
+### 拡張機能を充実させる
 
 ここによく使われてる機能が出ています。
+https://extensions.gnome.org/#sort=downloads
 
 あとFirefoxのアドオンでGNOME Shell integrationというのがあって、それを入れとくとブラウザ操作でインストールできるので便利です。
 個人的にはこういうの入れました
@@ -107,3 +115,4 @@ UbuntuはWin＋Tか何かでターミナル起動できて便利だったので�
     Win+L：　画面ロック（Dash to Panel入れてから出来るようになった気がする）
 
 参考サイト 
+https://wiki.gnome.org/Projects/GnomeShell/CheatSheet
