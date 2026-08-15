@@ -1,0 +1,109 @@
+# RHEL9デスクトップ亡命時にやったこと
+
+Redhatが有料になったタイミングでUbuntuに乗り換えた薄情な男が、Redhatにまた戻ってきました。個人用途も有料と思っていたのですが、無料で使えるようです。
+
+
+## OSインストール
+
+Ubuntuだとすでに入ってる他のOSを検出してGrubを適宜作ってくれるんだけど、そういうのは無いみたい。あと多分MBR消された。昔ながらの手動デュアルブート設定が必要なのかも。
+
+    ここでアカウント作成　https://access.redhat.com/
+    上記アカウントとパスワードはインストール時に使うのでメモ
+    Redhat Developerに加入　https://developers.redhat.com/register
+    Developer Subscription for individualsを有効に
+    RHEnterprise Linuxをここでダウンロード　https://access.redhat.com/ja/downloads
+    Fedora Media Writerをダウンロード　https://github.com/FedoraQt/MediaWriter/releases
+    それらを使って、起動USBを作ってインストール
+    インストール時にアカウント情報を入れておくと、subscription-managerとinsights-clientのRegisterが自動でされるみたいです
+
+## 初期設定
+### Nvidiaドライバ
+
+うちのディスプレイは初期状態では写りませんでした。ここからダウンロード　https://www.nvidia.com/download/index.aspx
+
+chmod 755 ./NVIDIA-Linux-x86_64-550.100.run 
+./NVIDIA-Linux-x86_64-550.100.run 
+
+NVIDIA Settingsなるものがインストールされます。デフォルトだと動画再生が地獄の遅さだったのですが、左ペインのX Server Display Configurationから、Force Full Composition Pipelineという設定をしたら我慢できる程度にはなりました。
+結構いいグラボ使っててDebian系だとデフォでヌルヌル動いてたのに…。
+追伸
+
+下記を参考にして、Nvidiaのリポ追加とドライバインストールをしてみたのですが、画質もスピードも明らかに向上しました。↑より先にこちらを試した方がいいかも？
+
+sudo dnf config-manager --add-repo http://developer.download.nvidia.com/compute/cuda/repos/rhel9/$(uname -i)/cuda-rhel9.repo
+sudo dnf module install nvidia-driver:latest-dkms
+sudo reboot
+nvidia-smi
+
+### snapを入れておく
+
+Redhat用が無いアプリでもこれがあればインストールできるはず。
+→と思ったがさほど使う機会が無かった
+
+sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+sudo dnf upgrade
+sudo dnf install snapd
+
+## 日本語入力の設定
+
+切り替えのデフォはWin+スペースのようです。
+入力モードの切り替え（ひらがな↔カタカナ）はまだ調べ中…知ってたら教えてください。英語キーボードだから何か変なのかな？
+
+日本語の変換はあまり賢くない…のでibus-mozcを入れようと思ったのだけど、Repoには入ってるものの何やら依存性の問題で怒られる。追いかけていくとglibcに突き当たる。
+
+$ sudo dnf install -y ibus-mozc
+  - nothing provides xrefresh needed by ibus-mozc-2.28.4950.102-7.el9.x86_64 from epel
+
+## デスクトップの改造
+
+### 好みのアイコンに変える
+
+    ソフトウエアセンターからTweaksを検索してインストール
+    ここでお好きなのを探す　https://www.gnome-look.org/browse?cat=132&ord=rating
+    たとえばFluentが気に入ったとして、Githubに行く　https://github.com/vinceliuice/Fluent-icon-theme
+    git clone https://github.com/vinceliuice/Fluent-icon-theme.git
+    cd Fluent-icon-theme; install.sh
+    Tweaksの外観→アイコンからFluentを選ぶ
+
+おそらく~/.local/share/iconsに、アイコンデータを保存してるのだと思います。
+昔は設定からGUIでダウンロードからインストールまで出来た記憶がありますが、あれは何だったんだろう。
+Docが使い辛いので変える
+
+Docの出しかたが分からず焦りました。
+Winキーを押すと出ますが、出っぱなしかマウスオーバーがいい！
+そんなわけでDash to Panelを導入してみました。
+
+    ソフトウエアセンターから拡張機能（GNOME Shell Extentions）を検索してインストール
+    下記サイトに行って、右上の「Install」ボタンを押す
+    https://extensions.gnome.org/extension/1160/dash-to-panel/
+
+見た目もそこそこだし、インストールも簡単で良かったです。はじめHyprlandを他ディストリから持ってこようとしたけど無理でした。成功した方、教えてください。
+
+## # 参考サイト
+拡張機能を充実させる
+
+ここによく使われてる機能が出ています。
+
+あとFirefoxのアドオンでGNOME Shell integrationというのがあって、それを入れとくとブラウザ操作でインストールできるので便利です。
+個人的にはこういうの入れました
+
+    https://extensions.gnome.org/extension/8/places-status-indicator/
+    https://extensions.gnome.org/extension/1460/vitals/
+    https://extensions.gnome.org/extension/120/system-monitor/
+    https://extensions.gnome.org/extension/104/netspeed/
+
+## ショートカットについて
+
+UbuntuはWin＋Tか何かでターミナル起動できて便利だったのですが、無いのかな？
+
+    Win+Space: 日本語入力切り替え
+    Alt+Tab：　アプリの切り替え
+    Alt+`：　謎
+    Win+A：　謎
+    Win+数字：　Dockのお気に入りに設定したアプリを機動
+    Win+矢印：　拡大、縮小、移動
+    左上隅にマウス：　デスクトップ俯瞰
+    Win：　デスクトップ俯瞰
+    Win+L：　画面ロック（Dash to Panel入れてから出来るようになった気がする）
+
+参考サイト 
